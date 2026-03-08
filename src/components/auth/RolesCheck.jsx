@@ -41,9 +41,8 @@ export default function RolesCheck() {
 
             <div className="flex gap-4.5" role="group" aria-label="Role selection">
                 {ROLES.map((role) => (
-                    <Link to={`${role.id=="admin"? "/auth/admin-login": "/auth/salesman-login" }`}>
+                    <Link key={role.id} to={`${role.id=="admin"? "/auth/admin-login": "/auth/salesman-login" }`}>
                         <div
-                            key={role.id}
                             className={`shadow-wrapper ${hoveredRole === role.id ? "relative z-10" : "relative z-50"
                                 }`}
                             onMouseEnter={() => setHoveredRole(role.id)}

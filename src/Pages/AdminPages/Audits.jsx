@@ -1,5 +1,5 @@
 import { CircleAlert } from "lucide-react";
-import LeadsTable from "../../components/AdminComponents/Dashboard/LeadsTable";
+import LeadsTable from "../../components/Common/LeadsTable";
 
 export default function Audits() {
     return (

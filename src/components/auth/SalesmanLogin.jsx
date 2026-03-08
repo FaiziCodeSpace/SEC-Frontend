@@ -28,7 +28,7 @@ export default function SalesmanSignin() {
             
             // Redirect based on role or to a general dashboard
             if (user.role === "salesman") {
-                navigate("/salesman-dashboard");
+                navigate("/salesman/dashboard");
             } else {
                 navigate("/dashboard");
             }

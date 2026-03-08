@@ -1,21 +1,32 @@
-import { useQuery } from '@tanstack/react-query';
-import leadsService from '../../services/leads.services';
-import LeadsTable from "../../components/AdminComponents/Dashboard/LeadsTable";
-import Stats from "../../components/AdminComponents/Dashboard/Stats";
 import { useState } from 'react';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { useNavigate } from 'react-router-dom';
+import leadsService from '../../services/leads.services';
+import Stats from '../../components/Common/Stats';
+import LeadsTable from '../../components/Common/LeadsTable';
+import toast from 'react-hot-toast';
 
 export default function Dashboard() {
+    const queryClient = useQueryClient();
+    const navigate = useNavigate();
     const [page, setPage] = useState(1);
     const [search, setSearch] = useState("");
 
-    // Fetch data using React Query
-    const { data, isLoading, isError, refetch } = useQuery({
+    const { data, isLoading, isError } = useQuery({
         queryKey: ['leads', page, search],
         queryFn: () => leadsService.getLeads(page, 10, { search }),
-        keepPreviousData: true,
     });
 
-    // Transform backend stats into the format your Stats component expects
+    const handleDelete = async (id) => {
+        try {
+            await leadsService.deleteLead(id);
+            toast.success("Lead removed by Admin");
+            queryClient.invalidateQueries(['leads']);
+        } catch (err) {
+            toast.error("Delete failed");
+        }
+    };
+
     const leadsDetail = data?.stats ? [
         { label: "Total Audits", value: data.stats.total.value, percentValue: data.stats.total.percentValue },
         { label: "Approved", value: data.stats.approved.value, percentValue: data.stats.approved.percentValue },
@@ -23,22 +34,22 @@ export default function Dashboard() {
         { label: "Rejected", value: data.stats.rejected.value, percentValue: data.stats.rejected.percentValue },
     ] : null;
 
-    if (isError) return <div className="p-10 text-center text-red-500">Error loading dashboard data.</div>;
+    if (isError) return <div className="p-10 text-center text-red-500">Error loading data.</div>;
 
     return (
         <section>
-            <Stats 
+            <Stats
                 LeadsDetail={leadsDetail} 
                 isLoading={isLoading} 
                 newAuditsCount={data?.stats?.approvedLast24h || 0}
                 total={data?.stats?.total?.value || 0}
             />
-            <LeadsTable 
+            <LeadsTable
                 data={data?.data || []} 
                 isLoading={isLoading} 
                 onSearch={setSearch}
-                onDelete={(id) => alert(`Placeholder: Delete lead ${id}`)}
-                onEdit={(lead) => alert(`Placeholder: Edit lead ${lead.LeadId}`)}
+                onDelete={handleDelete}
+                onEdit={(lead) => navigate(`/salesman/dashboard/leadform/edit/${lead._id}`)}
             />
         </section>
     );

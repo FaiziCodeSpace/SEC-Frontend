@@ -36,14 +36,15 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  const isAdmin = user?.role === 'admin' || user?.role === 'superadmin';
-  const isSuper = user?.role === 'superadmin';
-  const isApproved = user?.role !== 'salesman' || user?.status === 'Approved';
-
+  const isAdmin = user?.role === "admin" || user?.role === "superadmin";
+  const isSuper = user?.role === "superadmin";
+  const isSalesman = user?.role === "salesman";
+  const isApprovedSalesman = isSalesman && user?.status === "approved";
+  const canAccess = isAdmin || isApprovedSalesman;
   return (
     <AuthContext.Provider value={{
       user, login, logout, loading,
-      isAdmin, isSuper, isApproved
+      isAdmin, isSuper, isApprovedSalesman, canAccess
     }}>
       {children}
     </AuthContext.Provider>
