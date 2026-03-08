@@ -2,7 +2,6 @@ import { useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import {
     LayoutDashboard, Menu, X, LogOut, Bell,
-    SquareUserRound,
     File
 } from "lucide-react";
 import Logo from "../../assets/Logos/Logo.png";
